@@ -74,7 +74,7 @@ public class TestQBoard {
 		   List<QuestionBoard> qBoards = qBoardRepository.findBySubject("질문"); //키값으로 찾기
 		   
 		   QuestionBoard q1 = qBoards.get(0); //2번째 글 저장
-		   assertEquals("", q1.getId());
+		   assertEquals(5, q1.getId());
 		    
 	   }
 	
