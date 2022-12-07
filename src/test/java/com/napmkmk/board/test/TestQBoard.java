@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
+import com.napmkmk.board.entity.AnswerBoard;
 import com.napmkmk.board.entity.QuestionBoard;
+import com.napmkmk.board.repository.ABoardRepository;
 import com.napmkmk.board.repository.QBoardRepository;
 
 @SpringBootTest
@@ -21,6 +23,9 @@ public class TestQBoard {
 
    @Autowired
    QBoardRepository qBoardRepository;
+   
+   @Autowired
+	private ABoardRepository aBoardRepository; //레포지토리 주입받기
    
 //   @Test
 //   @DisplayName("저장 테스트")
@@ -52,8 +57,7 @@ public class TestQBoard {
     	 QuestionBoard q1= qBoard.get(); //2번째 글 저장
          assertEquals("되라욍오옹옹", q1.getSubject());//테스트여부확인 
      }
-      
-    
+   
    }
    
 	 @Test
@@ -109,17 +113,12 @@ public class TestQBoard {
 		   qResult.setSubject("저는 2번글입니다"); // 고쳐준다
 		   QuestionBoard qr = qBoardRepository.save(qResult); //다시 넣어준다
 		   assertEquals("저는 2번글입니다",qr.getSubject() );
-	
-	
-		    
+	    
 	   }
 	   
 	   @Test //DELETE
 	   @DisplayName("테스트문제 5(삭제)") //아이디가 3번인 글을 삭제 하시오 -> 글을 삭제 한 후 모든 글의 개수가 1개 줄었는지 테스트
 	   public void deleteId() {
-		   
-		   
-
 //		방법1  그냥 바로 삭제 
 //		   int qAllSize1 = (int) qBoardRepository.count(); //모든 데이터 개수 조회
 
@@ -130,11 +129,10 @@ public class TestQBoard {
 		   
 		  //////////////////////////////
 		   
-
-	//방법2 조회해서 삭제하기	   
+//방법2 조회해서 삭제하기	   
 		   int qAllSize1 = (int) qBoardRepository.count(); //모든 데이터 개수 조회
 		   
-		   Optional<QuestionBoard> oResult = qBoardRepository.findById(5); //아이디가 3번글 조회
+		   Optional<QuestionBoard> oResult = qBoardRepository.findById(1); //아이디가 3번글 조회
 		   assertTrue(oResult.isPresent());
 		   QuestionBoard qResult  =  oResult.get(); // 3번글 가져오기 완료
 		   qBoardRepository.delete(qResult); // 지워라
@@ -148,5 +146,8 @@ public class TestQBoard {
 	   }
 	 
    
+
+	   
+	 
    
 }
