@@ -84,43 +84,64 @@ public class TestQBoard {
 		   
 		   List<QuestionBoard> qBoards = qBoardRepository.findBySubjectAndContent("안녕", "안녕"); //키값으로 찾기
 		   
-		   QuestionBoard q1 = qBoards.get(0); //2번째 글 저장
+		   QuestionBoard q1 = qBoards.get(0); //1번째 글 저장
 		   assertEquals(6, q1.getId());
 		    
 	   }
 	   
 	   @Test
-	   @DisplayName("테스트문제 3") //제목에 '질문' 이라는 낱말이 포함된 글의 개수가 5인지 테스트 하시오
+	   @DisplayName("테스트 문제3") //제목에 '질문' 이라는 낱말이 포함된 글의 개수가 5인지 테스트 하시오
 	   public void searchQBoard5() {
 		   
-		   List<QuestionBoard> qBoards = qBoardRepository.findBySubjectLike("질문"); //키값으로 찾기
+		   List<QuestionBoard> qBoards = qBoardRepository.findBySubjectLike("%질문%"); //키값으로 찾기 Like는  % 들어 갈수 있음
 		   
-		   QuestionBoard q1 = qBoards.get(0); //2번째 글 저장
-		   assertEquals(5, q1.getId());
+		   assertEquals(5, qBoards.size()); //글의 개수!!
 		    
 	   }
 	   
 	   @Test //UPDATE
-	   @DisplayName("테스트문제 4") //아이디가 2번인 글의 제목을 '저는 2번글입니다' 로 수정 2번 글의 제목이 수정되었는지 테스트
+	   @DisplayName("테스트문제 4(수정)") //아이디가 2번인 글의 제목을 '저는 2번글입니다' 로 수정 2번 글의 제목이 수정되었는지 테스트
 	   public void modifySubject() {
 		   
-		   Optional<QuestionBoard> qBoards = qBoardRepository.findById(2); //키값으로 찾기
-		   assertTrue(qBoards.isPresent());
-		   QuestionBoard bod  =  qBoards.get();
-		   bod.setSubject("저는 2번글입니다");
-		   qBoardRepository.save(bod);
-		   List<QuestionBoard> questionBoards = qBoardRepository.findAll();
-		 //  QuestionBoard q1 = qBoards.get(0); //2번째 글 저장
-		  // assertEquals(5, q1.getId());
+		   Optional<QuestionBoard> oResult = qBoardRepository.findById(2); //아이디 2번 글 조회 키값으로 찾기 Optional이걸로 없을수도 있기때문에
+		   QuestionBoard qResult  =  oResult.get();
+		   
+		   qResult.setSubject("저는 2번글입니다"); // 고쳐준다
+		   QuestionBoard qr = qBoardRepository.save(qResult); //다시 넣어준다
+		   assertEquals("저는 2번글입니다",qr.getSubject() );
+	
+	
 		    
 	   }
 	   
 	   @Test //DELETE
-	   @DisplayName("테스트문제 5") //아이디가 3번인 글을 삭제 하시오 -> 글을 삭제 한 후 모든 글의 개수가 1개 줄었는지 테스트
+	   @DisplayName("테스트문제 5(삭제)") //아이디가 3번인 글을 삭제 하시오 -> 글을 삭제 한 후 모든 글의 개수가 1개 줄었는지 테스트
 	   public void deleteId() {
 		   
-		   qBoardRepository.deleteById(3);
-		   List<QuestionBoard> questionBoard = qBoardRepository.findAll();
+		   
+
+//		방법1  그냥 바로 삭제 
+//		   int qAllSize1 = (int) qBoardRepository.count(); //모든 데이터 개수 조회
+
+//		   qBoardRepository.deleteById(4);
+
+//		   int qAllSize2 = (int)qBoardRepository.count();
+//		   assertEquals(qAllSize2, qAllSize1-1);
+		   
+		  //////////////////////////////
+		   
+
+	//방법2 조회해서 삭제하기	   
+		   int qAllSize1 = (int) qBoardRepository.count(); //모든 데이터 개수 조회
+		   
+		   Optional<QuestionBoard> oResult = qBoardRepository.findById(5); //아이디가 3번글 조회
+		   assertTrue(oResult.isPresent());
+		   QuestionBoard qResult  =  oResult.get(); // 3번글 가져오기 완료
+		   qBoardRepository.delete(qResult); // 지워라
+	
+		   int qAllSize2 = (int)qBoardRepository.count();
+		   assertEquals(qAllSize2, qAllSize1-1);
+		   
 		   
 		  
 		    
